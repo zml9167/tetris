@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://ce3v24yn4tfop"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_26f8g"]
+size = Vector2(40, 40)
+
+[node name="Block" type="MeshInstance2D"]
+mesh = SubResource("QuadMesh_26f8g")
