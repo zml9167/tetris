@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Tetris"
-run/main_scene="uid://b7i68khvmaf6k"
+run/main_scene="uid://dul1q34g5ugqw"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://global.tscn"
+Global="*res://scene/global.tscn"
 
 [display]
 

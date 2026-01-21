@@ -4,7 +4,7 @@ extends Node
 @export var grid_size: Vector2
 @export var block_width: float
 
-var blocks: Array[MeshInstance2D]
+var blocks: Array
 var wall: Array
 var block_width_half: float
 var score = 0
@@ -36,17 +36,19 @@ func _ready() -> void:
 	spawn_position_x = wall[1] / 2
 	control_node.position = Vector2(spawn_position_x, block_width_half)
 	prefab_node.position = prefab_position
-	blocks.resize(grid_size.x * grid_size.y)
+	blocks.resize(roundi(grid_size.x * grid_size.y))
 	blocks.fill(null)
 	$Line2D.width = 1
 	$Line2D.default_color = Color()
 	$Line2D.add_point(Vector2(wall[1], 0))
 	$Line2D.add_point(Vector2(wall[1], wall[2]))
-	$HUD/Message.hide()
 	spawn_prefab()
+	prefab2control()
+	$Fall.start()
+	$MoveX.start()
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Input.is_action_pressed('move_down'):
 		$Fall.wait_time = 0.05
 	elif Input.is_action_just_released('move_down'):
@@ -138,26 +140,19 @@ func fall_done():
 					blocks[res] = null
 	score += score_level[level]
 	fall_wait_time = max(fall_wait_time - score_level[level] * 0.01, 0.05)
-	$HUD/Score.text = str(score)
+	$Score.text = str(score)
 	prefab2control()
 
 
 func game_over():
 	$Fall.stop()
 	$MoveX.stop()
-	$HUD/Message.show()
+	get_tree().paused = true
 	await get_tree().create_timer(3).timeout
-	$HUD/Message.hide()
-	$HUD/Title.show()
-	$HUD/StartButton.show()
-	control_node.free_blocks()
-	control_node.free_remote_transform()
-	prefab_node.free_blocks()
-	prefab_node.free_remote_transform()
-	for i in blocks:
-		if i != null:
-			i.free()
-	spawn_prefab()
+	if Global.score < score:
+		Global.score = score
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scene/title.tscn")
 
 
 func control2bolck() -> Array:
@@ -174,14 +169,6 @@ func control2bolck() -> Array:
 
 func position2index(pos: Vector2):
 	return int(pos.x / block_width) +  grid_size.x * int(pos.y / block_width)
-
-
-func _on_start_button_pressed() -> void:
-	$HUD/StartButton.hide()
-	$HUD/Title.hide()
-	prefab2control()
-	$Fall.start()
-	$MoveX.start()
 
 
 func prefab2control():

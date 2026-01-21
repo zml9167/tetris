@@ -4,7 +4,7 @@ var blocks: Array = []
 var rotate_able: bool = true
 
 
-func add_remote_transform(pos: Vector2, instance: MeshInstance2D):
+func add_remote_transform(pos: Vector2, instance):
 	var remote_transform = RemoteTransform2D.new()
 	add_child(remote_transform)
 	remote_transform.remote_path = remote_transform.get_path_to(instance)
@@ -25,9 +25,3 @@ func custom_rotate(radians: float) -> void:
 func clear_blocks_free_remote_transform():
 	blocks.clear()
 	free_remote_transform()
-
-
-func free_blocks():
-	for i in blocks:
-		i.free()
-	blocks.clear()
