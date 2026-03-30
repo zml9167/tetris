@@ -40,12 +40,6 @@ shadow_offset = Vector2(1, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3xoar"]
 
-[sub_resource type="InputEventAction" id="InputEventAction_0xm2m"]
-action = &"ui_accept"
-
-[sub_resource type="Shortcut" id="Shortcut_oyqm6"]
-events = [SubResource("InputEventAction_0xm2m")]
-
 [node name="Title" type="Node" unique_id=630360562]
 script = ExtResource("1_b1rhm")
 
@@ -116,8 +110,31 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
-shortcut = SubResource("Shortcut_oyqm6")
 text = "Play"
+
+[node name="Continue" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=1573308595]
+process_mode = 3
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
+text = "Continue"
+
+[node name="AbandonRun" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=343603493]
+process_mode = 3
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
+text = "Abandon Run"
 
 [node name="Exit" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=1173565371]
 layout_mode = 2
@@ -128,8 +145,9 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
-shortcut = SubResource("Shortcut_oyqm6")
 text = "Exit"
 
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Play" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Continue" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/AbandonRun" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Exit" to="." method="_on_exit_pressed"]

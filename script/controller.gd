@@ -21,35 +21,9 @@ func free_remote_transform():
 
 
 func random_rotate():
-	var degrees_list_len = get_rotate_list_len()
+	var degrees_list_len = len(degrees_list)
 	degrees_index = range(len(degrees_list)).pick_random()
 	rotation_degrees = degrees_list[degrees_index % degrees_list_len]
-
-
-func custom_rotate(direction: int) -> void:
-	var new_degrees_index = degrees_index + direction
-	var degrees_list_len = get_rotate_list_len()
-	var angle_deg = degrees_list[new_degrees_index % degrees_list_len] - degrees_list[degrees_index % degrees_list_len]
-	degrees_index = new_degrees_index
-	for i in blocks:
-		var move_position = Vector2.ZERO
-		var position_res = rotate_point_around_center(i.position, position, angle_deg)
-		if position_res.y > Global.wall['bottom']:
-			move_position.y = Global.wall['bottom'] - position_res.y - Global.block_width_half
-		if position_res.x < Global.wall['left']:
-			move_position.x = Global.wall['left'] - position_res.x + Global.block_width_half
-		elif position_res.x > Global.wall['right']:
-			move_position.x = Global.wall['right'] - position_res.x - Global.block_width_half
-		if Global.get_block_by_position(position_res + move_position) != null:
-			return
-		position += move_position
-	rotation_degrees = degrees_list[degrees_index % degrees_list_len]
-
-
-func get_rotate_list_len():
-	var degrees_list_len = len(degrees_list)
-	assert(degrees_list_len > 0, 'the "degrees_list" less at 1')
-	return degrees_list_len
 
 
 func clear_blocks_free_remote_transform():
@@ -80,5 +54,5 @@ func place(pos: Vector2, prefab: int, degrees: int):
 	prefab_index = prefab
 	degrees_index = degrees
 	degrees_list = Global.prefab_arr[prefab].rotation_list
-	var degrees_list_len = get_rotate_list_len()
+	var degrees_list_len = len(degrees_list)
 	rotation_degrees = degrees_list[degrees_index % degrees_list_len]

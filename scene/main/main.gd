@@ -67,9 +67,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		$Fall.timeout.emit()
 		$Fall.wait_time = 0.05
 	elif event.is_action_pressed('clockwise_rotation'):
-		control_node.custom_rotate(1)
+		custom_rotate(1)
 	elif event.is_action_pressed('counterclockwise_rotation'):
-		control_node.custom_rotate(-1)
+		custom_rotate(-1)
 	elif event.is_action_pressed('move_left'):
 		$MoveXTigger.start()
 		move_x(-1)
@@ -212,3 +212,23 @@ func random_spawn_prefab():
 	var random_index = range(len(Global.prefab_arr)).pick_random()
 	spawn_prefab(random_index)
 	prefab_node.random_rotate()
+
+
+func custom_rotate(direction: int) -> void:
+	var new_degrees_index = control_node.degrees_index + direction
+	var degrees_list_len = len(control_node.degrees_list)
+	var angle_deg = control_node.degrees_list[new_degrees_index % degrees_list_len] - control_node.degrees_list[control_node.degrees_index % degrees_list_len]
+	control_node.degrees_index = new_degrees_index
+	for i in control_node.blocks:
+		var move_position = Vector2.ZERO
+		var position_res = control_node.rotate_point_around_center(i.position, control_node.position, angle_deg)
+		if position_res.y > wall['bottom']:
+			move_position.y = wall['bottom'] - position_res.y - block_width_half
+		if position_res.x < wall['left']:
+			move_position.x = wall['left'] - position_res.x + block_width_half
+		elif position_res.x > wall['right']:
+			move_position.x = wall['right'] - position_res.x - block_width_half
+		if get_block_by_position(position_res + move_position) != null:
+			return
+		control_node.position += move_position
+	control_node.rotation_degrees = control_node.degrees_list[control_node.degrees_index % degrees_list_len]

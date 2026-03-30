@@ -14,12 +14,6 @@ var prefab_arr: Array
 var game_mode: GameMode = GameMode.NEW_GAME
 
 
-class SaveData extends Resource:
-	var fall_wait_time: int
-	var stack_top: int 
-	var grid: Array = []
-
-
 func load_prefab():
 	var dir: DirAccess = DirAccess.open(PREFAB_DIR)
 	if dir == null:
