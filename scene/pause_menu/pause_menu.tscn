@@ -1,0 +1,107 @@
+[gd_scene format=3 uid="uid://mdq4iy6in1rh"]
+
+[ext_resource type="Script" uid="uid://d0ft8er0hil4m" path="res://scene/pause_menu/pause_menu.gd" id="1_mlvoh"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mlvoh"]
+font_size = 64
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mlvoh"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_djbmy"]
+bg_color = Color(0.46618086, 0.4661808, 0.4661808, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nqex4"]
+bg_color = Color(0.7121294, 0.7121294, 0.71212935, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xc22o"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_mlvoh"]
+action = &"ui_cancel"
+
+[sub_resource type="Shortcut" id="Shortcut_tnaa3"]
+events = [SubResource("InputEventAction_mlvoh")]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=2017317042]
+process_mode = 2
+script = ExtResource("1_mlvoh")
+title_scene_path = "res://scene/title/title.tscn"
+
+[node name="Panel" type="Panel" parent="." unique_id=199606261]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=818413371]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -162.5
+offset_top = -167.0
+offset_right = 162.5
+offset_bottom = 167.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Pause" type="Label" parent="VBoxContainer2" unique_id=1828219304]
+layout_mode = 2
+text = "Pause"
+label_settings = SubResource("LabelSettings_mlvoh")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="VBoxContainer2" unique_id=608343104]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2" unique_id=1199216369]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Back" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=49997092]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_mlvoh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_djbmy")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nqex4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xc22o")
+shortcut = SubResource("Shortcut_tnaa3")
+text = "Back"
+
+[node name="Save&Quit" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=388445393]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_mlvoh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_djbmy")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nqex4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xc22o")
+text = "Save&Quit"
+
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Save&Quit" to="." method="_on_save_quit_pressed"]

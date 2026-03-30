@@ -1,0 +1,135 @@
+[gd_scene format=3 uid="uid://dul1q34g5ugqw"]
+
+[ext_resource type="Script" uid="uid://bh6q2plnpwxim" path="res://scene/title/title.gd" id="1_b1rhm"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_oyqm6"]
+font_size = 24
+
+[sub_resource type="LabelSettings" id="LabelSettings_y7k74"]
+font_size = 64
+shadow_size = 10
+shadow_color = Color(0, 0, 0, 0.4862745)
+shadow_offset = Vector2(3, 3)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7k74"]
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyqm6"]
+bg_color = Color(0.46618086, 0.4661808, 0.4661808, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kpexm"]
+bg_color = Color(0.7121294, 0.7121294, 0.71212935, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_size = 8
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3xoar"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_0xm2m"]
+action = &"ui_accept"
+
+[sub_resource type="Shortcut" id="Shortcut_oyqm6"]
+events = [SubResource("InputEventAction_0xm2m")]
+
+[node name="Title" type="Node" unique_id=630360562]
+script = ExtResource("1_b1rhm")
+
+[node name="Backgroud" type="Panel" parent="." unique_id=1675951363]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Mask" type="Panel" parent="." unique_id=1415903482]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HighestScore" type="Label" parent="." unique_id=1123548010]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 216.0
+offset_top = 350.0
+offset_right = 401.0
+offset_bottom = 384.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Highest Score: 0"
+label_settings = SubResource("LabelSettings_oyqm6")
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="." unique_id=1173499414]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -107.0
+offset_top = -167.0
+offset_right = 107.0
+offset_bottom = 167.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="VBoxContainer2" unique_id=1785177661]
+layout_mode = 2
+text = "Tetris"
+label_settings = SubResource("LabelSettings_y7k74")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoxContainer" type="BoxContainer" parent="VBoxContainer2" unique_id=121199275]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2" unique_id=1737178766]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Play" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=331507286]
+process_mode = 3
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
+shortcut = SubResource("Shortcut_oyqm6")
+text = "Play"
+
+[node name="Exit" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=1173565371]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
+shortcut = SubResource("Shortcut_oyqm6")
+text = "Exit"
+
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Play" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Exit" to="." method="_on_exit_pressed"]

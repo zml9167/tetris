@@ -1,9 +1,6 @@
+extends Resource
 class_name Prefab
 
-var position_list: Array
-var rotate_able: bool
-
-
-func _init(pos_list: Array, rotate: bool=true) -> void:
-	position_list = pos_list
-	rotate_able = rotate
+@export var position_list: Array[Vector2]
+@export var rotation_list: Array[int] = [0, 90, 180, 270]
+@export_range(0, 100, 0.5) var block_width: float
