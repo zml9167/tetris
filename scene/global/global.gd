@@ -43,19 +43,21 @@ func _init() -> void:
 		save_data = load(save_path)
 	if not save_data:
 		save_data = SaveData.new()
+	highest_score = save_data.highest_score
 
 
 func save_highest_score(score: int):
 	if score <= highest_score:
 		return
 	highest_score = score
+	save_data.highest_score = highest_score
+	ResourceSaver.save(save_data, save_path)
 
 
-func save_game(blocks, stack_top, fall_wait_time, control_node, prefab_node, score):
+func save_game(blocks, stack_top, control_node, prefab_node, score):
 	save_data.has_save = true
 	save_data.highest_score = highest_score
 	save_data.stack_top = stack_top
-	save_data.fall_wait_time = fall_wait_time
 	save_data.score = score
 	var grid = []
 	grid.resize(len(blocks))

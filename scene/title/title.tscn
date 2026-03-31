@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dul1q34g5ugqw"]
 
 [ext_resource type="Script" uid="uid://bh6q2plnpwxim" path="res://scene/title/title.gd" id="1_b1rhm"]
+[ext_resource type="Script" uid="uid://cbabe7et3hbnh" path="res://scene/title/abandon_confirm_dialog.gd" id="2_ar5m3"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_oyqm6"]
 font_size = 24
@@ -44,13 +45,6 @@ shadow_offset = Vector2(1, 1)
 script = ExtResource("1_b1rhm")
 
 [node name="Backgroud" type="Panel" parent="." unique_id=1675951363]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Mask" type="Panel" parent="." unique_id=1415903482]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -105,7 +99,7 @@ process_mode = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
@@ -117,7 +111,7 @@ process_mode = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
@@ -129,7 +123,7 @@ process_mode = 3
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
@@ -140,14 +134,21 @@ text = "Abandon Run"
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_y7k74")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_oyqm6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_kpexm")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_3xoar")
 text = "Exit"
 
+[node name="AbandonConfirmDialog" type="AcceptDialog" parent="." unique_id=1483308129]
+oversampling_override = 1.0
+ok_button_text = "Confirm"
+dialog_text = "Are you sure you want to abandon your current game? Your progress will be lost."
+script = ExtResource("2_ar5m3")
+
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Continue" to="." method="_on_continue_pressed"]
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/AbandonRun" to="." method="_on_abandon_run_pressed"]
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Exit" to="." method="_on_exit_pressed"]
+[connection signal="confirmed" from="AbandonConfirmDialog" to="." method="_on_abandon_confirm_dialog_confirmed"]

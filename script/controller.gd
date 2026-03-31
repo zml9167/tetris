@@ -22,8 +22,8 @@ func free_remote_transform():
 
 func random_rotate():
 	var degrees_list_len = len(degrees_list)
-	degrees_index = range(len(degrees_list)).pick_random()
-	rotation_degrees = degrees_list[degrees_index % degrees_list_len]
+	degrees_index = randi() % degrees_list_len
+	rotation_degrees = degrees_list[degrees_index]
 
 
 func clear_blocks_free_remote_transform():

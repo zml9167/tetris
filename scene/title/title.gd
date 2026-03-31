@@ -28,6 +28,10 @@ func _on_continue_pressed() -> void:
 
 
 func _on_abandon_run_pressed() -> void:
+	$AbandonConfirmDialog.popup_centered_clamped()
+
+
+func _on_abandon_confirm_dialog_confirmed() -> void:
 	Global.abandon_run()
 	$VBoxContainer2/VBoxContainer/Play.show()
 	$VBoxContainer2/VBoxContainer/Continue.hide()

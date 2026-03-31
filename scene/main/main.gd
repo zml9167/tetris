@@ -14,6 +14,8 @@ var spawn_position_x: float = roundi(wall['right'] / 2)
 var control_node: Controller = Controller.new()
 var prefab_node: Controller = Controller.new()
 var blocks: Array
+var fast_down: bool
+var max_fall_wait_time := 0.05
 
 @onready var prefab_position: Vector2 = $PreFabPoint.position
 @onready var pause_menu = $PauseMenu
@@ -28,8 +30,8 @@ func parse_save_data():
 			blocks[i] = block
 			add_child(block)
 	score = Global.save_data.score
+	update_fall_wait_time(score)
 	stack_top = Global.save_data.stack_top
-	fall_wait_time = Global.save_data.fall_wait_time
 	control_node.degrees_index = Global.save_data.control_node.degrees_index
 	control_node.prefab_index = Global.save_data.control_node.prefab_index
 	spawn_prefab(control_node, control_node.prefab_index)
@@ -56,6 +58,7 @@ func _ready() -> void:
 		prefab_node.position = prefab_position
 		random_spawn_prefab()
 		prefab2control()
+	$Fall.wait_time = fall_wait_time
 	$Fall.start()
 	$Score.text = str(score)
 
@@ -86,7 +89,8 @@ func _process(_delta: float) -> void:
 	if $Fall.is_stopped():
 		return
 	if Input.is_action_pressed('move_down'):
-		$Fall.wait_time = 0.05
+		if fast_down == true:
+			$Fall.wait_time = max_fall_wait_time
 	elif Input.is_action_just_released('move_down'):
 		$Fall.wait_time = fall_wait_time
 
@@ -94,7 +98,7 @@ func _process(_delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('move_down'):
 		$Fall.timeout.emit()
-		$Fall.wait_time = 0.05
+		fast_down = true
 	elif event.is_action_pressed('clockwise_rotation'):
 		custom_rotate(1)
 	elif event.is_action_pressed('counterclockwise_rotation'):
@@ -115,7 +119,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_fall_timeout() -> void:
 	for i: Node2D in control_node.blocks:
-		var next_pos = i.global_position + Vector2(0, block_width)
+		var next_pos = i.position + Vector2(0, block_width)
 		if next_pos.y > wall['bottom']:
 			fall_done()
 			return
@@ -144,6 +148,11 @@ func move_x(input_x):
 		if blocks[next_index] != null:
 			return
 	control_node.position.x += input_x * block_width
+
+
+func update_fall_wait_time(value: int):
+	fall_wait_time = max(fall_wait_time - value*0.01, max_fall_wait_time)
+	$Fall.wait_time = fall_wait_time
 
 
 func fall_done():
@@ -177,10 +186,12 @@ func fall_done():
 					blocks[res].position.y += block_width
 					blocks[res + grid_size.x] = blocks[res]
 					blocks[res] = null
-	score += score_level[level]
-	fall_wait_time = max(fall_wait_time - score_level[level] * 0.01, 0.05)
-	$Score.text = str(score)
+	level = clampi(level, 0, len(score_level) - 1)
 	prefab2control()
+	score += score_level[level]
+	$Score.text = str(score)
+	fast_down = false
+	update_fall_wait_time(score_level[level])
 
 
 func game_over():
@@ -213,7 +224,10 @@ func prefab2control():
 	var switch_node = prefab_node
 	prefab_node = control_node
 	control_node = switch_node
-	control_node.position = Vector2(spawn_position_x, control_node.blocks[-1].position.y - prefab_position.y - block_width_half)
+	if control_node.blocks.is_empty():
+		control_node.position = Vector2(spawn_position_x, block_width_half)
+	else:
+		control_node.position = Vector2(spawn_position_x, control_node.blocks[-1].position.y - prefab_position.y - block_width_half)
 	prefab_node.blocks.clear()
 	random_spawn_prefab()
 
@@ -222,16 +236,15 @@ func spawn_prefab(node: Controller, prefab_index: int):
 	var prefab: Prefab = Global.prefab_arr[prefab_index]
 	node.degrees_list = prefab.rotation_list
 	node.prefab_index = prefab_index
-	for i in prefab.position_list:
+	for vec2 in prefab.position_list:
 		var block_instance = block_scene.instantiate()
-		var pos_val = i * prefab.block_width
-		block_instance.position = pos_val
+		var pos_val = vec2 * prefab.block_width
 		add_child(block_instance)
 		node.add_remote_transform(pos_val, block_instance)
 
 
 func random_spawn_prefab():
-	var random_index = range(len(Global.prefab_arr)).pick_random()
+	var random_index = randi() % len(Global.prefab_arr)
 	prefab_node.position = prefab_position
 	spawn_prefab(prefab_node, random_index)
 	prefab_node.random_rotate()
@@ -241,21 +254,43 @@ func custom_rotate(direction: int) -> void:
 	var new_degrees_index = control_node.degrees_index + direction
 	var degrees_list_len = len(control_node.degrees_list)
 	var angle_deg = control_node.degrees_list[new_degrees_index % degrees_list_len] - control_node.degrees_list[control_node.degrees_index % degrees_list_len]
-	control_node.degrees_index = new_degrees_index
+	
+	# 第一步：计算所有方块的最终位置
+	var final_positions = []
+	var total_move = Vector2.ZERO
+	
 	for i in control_node.blocks:
-		var move_position = Vector2.ZERO
 		var position_res = control_node.rotate_point_around_center(i.position, control_node.position, angle_deg)
+		var move_position = Vector2.ZERO
+		
+		# 下方超出边界直接返回（不旋转）
 		if position_res.y > wall['bottom']:
-			move_position.y = wall['bottom'] - position_res.y - block_width_half
+			return
+		
+		# 左右边界可以尝试修正
 		if position_res.x < wall['left']:
 			move_position.x = wall['left'] - position_res.x + block_width_half
 		elif position_res.x > wall['right']:
 			move_position.x = wall['right'] - position_res.x - block_width_half
-		if get_block_by_position(position_res + move_position) != null:
+		
+		var final_pos = position_res + move_position
+		# 边界检查
+		if final_pos.x < wall['left'] or final_pos.x > wall['right']:
 			return
-		control_node.position += move_position
+		
+		final_positions.append(final_pos)
+		total_move += move_position
+	
+	# 第二步：统一进行碰撞检测
+	for pos in final_positions:
+		if get_block_by_position(pos) != null:
+			return
+	
+	# 所有检查通过后更新状态
+	control_node.degrees_index = new_degrees_index
+	control_node.position += total_move
 	control_node.rotation_degrees = control_node.degrees_list[control_node.degrees_index % degrees_list_len]
 
 
 func _on_pause_menu_save() -> void:
-	Global.save_game(blocks, stack_top, fall_wait_time, control_node, prefab_node, score)
+	Global.save_game(blocks, stack_top, control_node, prefab_node, score)
