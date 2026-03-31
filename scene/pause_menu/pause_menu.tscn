@@ -92,6 +92,17 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_xc22o")
 shortcut = SubResource("Shortcut_tnaa3")
 text = "Back"
 
+[node name="Save" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=463348830]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_mlvoh")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_djbmy")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nqex4")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_xc22o")
+text = "Save"
+
 [node name="Save&Quit" type="Button" parent="VBoxContainer2/VBoxContainer" unique_id=388445393]
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -104,4 +115,5 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_xc22o")
 text = "Save&Quit"
 
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="VBoxContainer2/VBoxContainer/Save" to="." method="_on_save_pressed"]
 [connection signal="pressed" from="VBoxContainer2/VBoxContainer/Save&Quit" to="." method="_on_save_quit_pressed"]

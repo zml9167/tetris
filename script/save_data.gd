@@ -8,3 +8,4 @@ class_name SaveData
 @export var control_node = {}
 @export var prefab_node = {}
 @export var highest_score: int
+@export var score: int

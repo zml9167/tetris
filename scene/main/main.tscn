@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://b7i68khvmaf6k"]
 
 [ext_resource type="Script" uid="uid://befty3svf3b2i" path="res://scene/main/main.gd" id="1_0imob"]
-[ext_resource type="PackedScene" uid="uid://ce3v24yn4tfop" path="res://scene/block/block.tscn" id="2_6vuhr"]
 [ext_resource type="PackedScene" uid="uid://mdq4iy6in1rh" path="res://scene/pause_menu/pause_menu.tscn" id="3_6vuhr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0xm2m"]
@@ -15,7 +14,6 @@ font_size = 64
 
 [node name="Main" type="Node" unique_id=2119766010]
 script = ExtResource("1_0imob")
-block_scene = ExtResource("2_6vuhr")
 pause_menu_scene = ExtResource("3_6vuhr")
 
 [node name="PreFabPoint" type="Marker2D" parent="." unique_id=1273018037]
@@ -90,3 +88,4 @@ visible = false
 [connection signal="timeout" from="Fall" to="." method="_on_fall_timeout"]
 [connection signal="timeout" from="MoveXTigger" to="." method="_on_move_x_tigger_timeout"]
 [connection signal="timeout" from="MoveX" to="." method="_on_move_x_timeout"]
+[connection signal="save" from="PauseMenu" to="." method="_on_pause_menu_save"]

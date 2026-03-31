@@ -3,7 +3,7 @@ extends Node
 @export var block_scene: PackedScene = preload("res://scene/block/block.tscn")
 @export var pause_menu_scene: PackedScene
 @export var block_width: float = 40
-@export var grid_size: Vector2 = Vector2(15, 20)
+@export var grid_size: Vector2i = Vector2i(15, 20)
 @export var fall_wait_time := 0.5
 @export var score_level := [0, 1, 3, 5, 7]
 
@@ -20,21 +20,44 @@ var blocks: Array
 @onready var stack_top = wall['bottom']
 
 
-func _init() -> void:
-	blocks.resize(roundi(grid_size.x * grid_size.y))
-	blocks.fill(null)
+func parse_save_data():
+	for i in range(len(Global.save_data.grid)):
+		if Global.save_data.grid[i] == 1:
+			var block = block_scene.instantiate()
+			block.position = index2position(i)
+			blocks[i] = block
+			add_child(block)
+	score = Global.save_data.score
+	stack_top = Global.save_data.stack_top
+	fall_wait_time = Global.save_data.fall_wait_time
+	control_node.degrees_index = Global.save_data.control_node.degrees_index
+	control_node.prefab_index = Global.save_data.control_node.prefab_index
+	spawn_prefab(control_node, control_node.prefab_index)
+	control_node.place(Global.save_data.control_node['position'])
+	prefab_node.degrees_index = Global.save_data.prefab_node.degrees_index
+	prefab_node.prefab_index = Global.save_data.prefab_node.prefab_index
+	spawn_prefab(prefab_node, prefab_node.prefab_index)
+	prefab_node.place(prefab_position)
 
 
 func _ready() -> void:
+	blocks.resize(roundi(grid_size.x * grid_size.y))
+	blocks.fill(null)
 	add_child(control_node)
 	add_child(prefab_node)
-	control_node.position = Vector2(spawn_position_x, block_width_half)
-	prefab_node.position = prefab_position
 	$Line2D.width = 1
 	$Line2D.default_color = Color()
 	$Line2D.add_point(Vector2(wall['right'], 0))
 	$Line2D.add_point(Vector2(wall['right'], wall['bottom']))
-	start_game()
+	if Global.game_mode == Global.GameMode.CONTINUE:
+		parse_save_data()
+	else:
+		control_node.position = Vector2(spawn_position_x, block_width_half)
+		prefab_node.position = prefab_position
+		random_spawn_prefab()
+		prefab2control()
+	$Fall.start()
+	$Score.text = str(score)
 
 
 func position2index(pos: Vector2):
@@ -44,6 +67,12 @@ func position2index(pos: Vector2):
 	if x < 0 or x >= grid_size.x or y < 0 or y >= grid_size.y:
 		return -1
 	return x + grid_size.x * y
+
+
+func index2position(index: int):
+	var row = int(index / grid_size.x)
+	var col = index % grid_size.x
+	return Vector2((col + 0.5) * block_width, (row + 0.5) * block_width)
 
 
 func get_block_by_position(value: Vector2):
@@ -164,12 +193,6 @@ func game_over():
 	tween.tween_callback(func (): get_tree().change_scene_to_file("res://scene/title/title.tscn"))
 
 
-func start_game():
-	random_spawn_prefab()
-	prefab2control()
-	$Fall.start()
-
-
 func control2bolck() -> Array:
 	var rows = []
 	for i in control_node.blocks:
@@ -195,22 +218,22 @@ func prefab2control():
 	random_spawn_prefab()
 
 
-func spawn_prefab(prefab_index: int):
-	prefab_node.position = prefab_position
+func spawn_prefab(node: Controller, prefab_index: int):
 	var prefab: Prefab = Global.prefab_arr[prefab_index]
-	prefab_node.degrees_list = prefab.rotation_list
-	prefab_node.prefab_index = prefab_index
+	node.degrees_list = prefab.rotation_list
+	node.prefab_index = prefab_index
 	for i in prefab.position_list:
 		var block_instance = block_scene.instantiate()
 		var pos_val = i * prefab.block_width
 		block_instance.position = pos_val
 		add_child(block_instance)
-		prefab_node.add_remote_transform(pos_val, block_instance)
+		node.add_remote_transform(pos_val, block_instance)
 
 
 func random_spawn_prefab():
 	var random_index = range(len(Global.prefab_arr)).pick_random()
-	spawn_prefab(random_index)
+	prefab_node.position = prefab_position
+	spawn_prefab(prefab_node, random_index)
 	prefab_node.random_rotate()
 
 
@@ -232,3 +255,7 @@ func custom_rotate(direction: int) -> void:
 			return
 		control_node.position += move_position
 	control_node.rotation_degrees = control_node.degrees_list[control_node.degrees_index % degrees_list_len]
+
+
+func _on_pause_menu_save() -> void:
+	Global.save_game(blocks, stack_top, fall_wait_time, control_node, prefab_node, score)

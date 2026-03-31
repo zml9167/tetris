@@ -49,10 +49,8 @@ func rotate_point_around_center(point: Vector2, center: Vector2, angle_deg: floa
 	return Vector2(new_x, new_y) + center
 
 
-func place(pos: Vector2, prefab: int, degrees: int):
+func place(pos: Vector2):
 	position = pos
-	prefab_index = prefab
-	degrees_index = degrees
-	degrees_list = Global.prefab_arr[prefab].rotation_list
+	degrees_list = Global.prefab_arr[prefab_index].rotation_list
 	var degrees_list_len = len(degrees_list)
 	rotation_degrees = degrees_list[degrees_index % degrees_list_len]
