@@ -97,7 +97,6 @@ func _process(_delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('move_down'):
-		$Fall.timeout.emit()
 		fast_down = true
 	elif event.is_action_pressed('clockwise_rotation'):
 		custom_rotate(1)
