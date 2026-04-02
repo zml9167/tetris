@@ -22,6 +22,10 @@ A classic Tetris game implemented using Godot 4.6 engine.
 - GDScript
 - 2D graphics
 
+## Play Online
+
+You can play the game directly in your browser at: [https://zml9167.github.io/tetris/Tetris.html](https://zml9167.github.io/tetris/Tetris.html)
+
 ## Installation
 
 1. Download and install [Godot 4.6](https://godotengine.org/download)

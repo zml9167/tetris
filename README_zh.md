@@ -22,6 +22,10 @@
 - GDScript
 - 2D 图形
 
+## 在线游玩
+
+你可以直接在浏览器中游玩：[https://zml9167.github.io/tetris/Tetris.html](https://zml9167.github.io/tetris/Tetris.html)
+
 ## 安装方法
 
 1. 下载并安装 [Godot 4.6](https://godotengine.org/download)
