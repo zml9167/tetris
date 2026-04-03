@@ -212,7 +212,7 @@ func prefab2control():
 		blocks[position2index(block_pos)] = i
 		var row = int(block_pos.y / block_width)
 		if row not in rows:
-			rows.append(int(block_pos.y / block_width))
+			rows.append(row)
 		i.reparent(self)
 		var block_rel_pos = block_pos - control_node.position
 		if block_rel_pos.y > spawn_position_y:
