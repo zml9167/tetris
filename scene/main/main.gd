@@ -11,8 +11,8 @@ var score = 0
 var block_width_half = roundi(block_width / 2)
 var wall = {'left': 0, 'right': grid_size.x * block_width, 'bottom': block_width * grid_size.y}
 var spawn_position_x: float = roundi(wall['right'] / 2)
-var control_node: Controller = Controller.new()
-var prefab_node: Controller = Controller.new()
+var control_node: Controller
+var prefab_node: Controller
 var blocks: Array
 var fast_down: bool
 var max_fall_wait_time := 0.05
@@ -29,22 +29,19 @@ func parse_save_data():
 			block.position = index2position(i)
 			blocks[i] = block
 			add_child(block)
-	score = Global.save_data.score
-	update_fall_wait_time(score)
+	update_fall_wait_time(Global.save_data.score)
 	stack_top = Global.save_data.stack_top
-	control_node.degrees_index = Global.save_data.control_node.degrees_index
-	control_node.prefab_index = Global.save_data.control_node.prefab_index
-	spawn_prefab(control_node, control_node.prefab_index)
-	control_node.place(Global.save_data.control_node['position'])
-	prefab_node.degrees_index = Global.save_data.prefab_node.degrees_index
-	prefab_node.prefab_index = Global.save_data.prefab_node.prefab_index
-	spawn_prefab(prefab_node, prefab_node.prefab_index)
-	prefab_node.place(prefab_position)
+	control_node.place(Global.save_data.control_node)
+	Global.save_data.prefab_node.position = prefab_position
+	prefab_node.place(Global.save_data.prefab_node)
 
 
 func _ready() -> void:
 	blocks.resize(roundi(grid_size.x * grid_size.y))
 	blocks.fill(null)
+	var controller_scene = preload("res://scene/controller/controller.tscn")
+	control_node = controller_scene.instantiate()
+	prefab_node = controller_scene.instantiate()
 	add_child(control_node)
 	add_child(prefab_node)
 	$Line2D.width = 1
@@ -54,11 +51,8 @@ func _ready() -> void:
 	if Global.game_mode == Global.GameMode.CONTINUE:
 		parse_save_data()
 	else:
-		control_node.position = Vector2(spawn_position_x, block_width_half)
-		prefab_node.position = prefab_position
-		random_spawn_prefab()
+		prefab_random_spawn()
 		prefab2control()
-	$Fall.wait_time = fall_wait_time
 	$Fall.start()
 	$Score.text = str(score)
 
@@ -89,9 +83,8 @@ func _process(_delta: float) -> void:
 	if $Fall.is_stopped():
 		return
 	if Input.is_action_pressed('move_down'):
-		if fast_down == true:
-			$Fall.wait_time = max_fall_wait_time
-	elif Input.is_action_just_released('move_down'):
+		$Fall.wait_time = max_fall_wait_time if fast_down == true else fall_wait_time
+	else:
 		$Fall.wait_time = fall_wait_time
 
 
@@ -99,9 +92,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('move_down'):
 		fast_down = true
 	elif event.is_action_pressed('clockwise_rotation'):
-		custom_rotate(1)
+		control_rotate(1)
 	elif event.is_action_pressed('counterclockwise_rotation'):
-		custom_rotate(-1)
+		control_rotate(-1)
 	elif event.is_action_pressed('move_left'):
 		$MoveXTigger.start()
 		move_x(-1)
@@ -117,13 +110,13 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_fall_timeout() -> void:
-	for i: Node2D in control_node.blocks:
-		var next_pos = i.position + Vector2(0, block_width)
+	for i in control_node.get_children():
+		var next_pos = i.global_position + Vector2(0, block_width)
+		if next_pos.y < 0:
+			continue
 		if next_pos.y > wall['bottom']:
 			fall_done()
 			return
-		if next_pos.y < 0:
-			continue
 		var next_index = position2index(next_pos)
 		if blocks[next_index] != null:
 			fall_done()
@@ -139,8 +132,8 @@ func _on_move_x_timeout() -> void:
 
 
 func move_x(input_x):
-	for i in control_node.blocks:
-		var next_pos = i.position + Vector2(block_width * input_x, 0)
+	for i in control_node.get_children():
+		var next_pos = i.global_position + Vector2(block_width * input_x, 0)
 		if next_pos.x < wall['left'] or next_pos.x > wall['right']:
 			return
 		var next_index = position2index(next_pos)
@@ -149,22 +142,28 @@ func move_x(input_x):
 	control_node.position.x += input_x * block_width
 
 
-func update_fall_wait_time(value: int):
-	fall_wait_time = max(fall_wait_time - value*0.01, max_fall_wait_time)
+func update_fall_wait_time(score_value: int):
+	score += score_value
+	fall_wait_time = max(fall_wait_time - score_value*0.01, max_fall_wait_time)
 	$Fall.wait_time = fall_wait_time
 
 
 func fall_done():
+	fast_down = false
 	$MoveX.stop()
-	for i in control_node.blocks:
-		if i.position.y < 0:
+	for i in control_node.get_children():
+		if i.global_position.y < 0:
 			game_over()
 			return
-		if i.position.y < stack_top:
-			stack_top = i.position.y
+		if i.global_position.y < stack_top:
+			stack_top = i.global_position.y
 	var res = 0 
 	var level = 0
-	for i in control2bolck():
+	var rows = prefab2control()
+	
+	# 从上到下遍历
+	rows.sort()
+	for i in rows:
 		var count = 0
 		for j in range(grid_size.x):
 			if blocks[i * grid_size.x + j] != null:
@@ -186,11 +185,8 @@ func fall_done():
 					blocks[res + grid_size.x] = blocks[res]
 					blocks[res] = null
 	level = clampi(level, 0, len(score_level) - 1)
-	prefab2control()
-	score += score_level[level]
-	$Score.text = str(score)
-	fast_down = false
 	update_fall_wait_time(score_level[level])
+	$Score.text = str(score)
 
 
 func game_over():
@@ -198,21 +194,10 @@ func game_over():
 	$MoveX.stop()
 	$GameOver.show()
 	Global.save_highest_score(score)
+	Global.clear_save()
 	var tween = create_tween()
 	tween.tween_property($GameOver/ColorRect, "color", Color.BLACK, 3)
 	tween.tween_callback(func (): get_tree().change_scene_to_file("res://scene/title/title.tscn"))
-
-
-func control2bolck() -> Array:
-	var rows = []
-	for i in control_node.blocks:
-		blocks[position2index(i.position)] = i
-		var row = int(i.position.y / block_width)
-		if row not in rows:
-			rows.append(int(i.position.y / block_width))
-	control_node.clear_blocks_free_remote_transform()
-	rows.sort()
-	return rows
 
 
 func _on_move_x_tigger_timeout() -> void:
@@ -220,59 +205,48 @@ func _on_move_x_tigger_timeout() -> void:
 
 
 func prefab2control():
+	var rows = []
+	var spawn_position_y = 0
+	for i in control_node.get_children():
+		var block_pos = i.global_position
+		blocks[position2index(block_pos)] = i
+		var row = int(block_pos.y / block_width)
+		if row not in rows:
+			rows.append(int(block_pos.y / block_width))
+		i.reparent(self)
+		var block_rel_pos = block_pos - control_node.position
+		if block_rel_pos.y > spawn_position_y:
+			spawn_position_y = block_rel_pos.y
 	var switch_node = prefab_node
 	prefab_node = control_node
 	control_node = switch_node
-	if control_node.blocks.is_empty():
-		control_node.position = Vector2(spawn_position_x, block_width_half)
-	else:
-		control_node.position = Vector2(spawn_position_x, control_node.blocks[-1].position.y - prefab_position.y - block_width_half)
-	prefab_node.blocks.clear()
-	random_spawn_prefab()
+	control_node.position = Vector2(spawn_position_x, -spawn_position_y-block_width_half)
+	prefab_random_spawn()
+	return rows
 
 
-func spawn_prefab(node: Controller, prefab_index: int):
-	var prefab: Prefab = Global.prefab_arr[prefab_index]
-	node.degrees_list = prefab.rotation_list
-	node.prefab_index = prefab_index
-	for vec2 in prefab.position_list:
-		var block_instance = block_scene.instantiate()
-		var pos_val = vec2 * prefab.block_width
-		add_child(block_instance)
-		node.add_remote_transform(pos_val, block_instance)
-
-
-func random_spawn_prefab():
-	var random_index = randi() % len(Global.prefab_arr)
+func prefab_random_spawn():
 	prefab_node.position = prefab_position
-	spawn_prefab(prefab_node, random_index)
-	prefab_node.random_rotate()
+	prefab_node.random_spawn()
 
 
-func custom_rotate(direction: int) -> void:
-	var new_degrees_index = control_node.degrees_index + direction
-	var degrees_list_len = len(control_node.degrees_list)
-	var angle_deg = control_node.degrees_list[new_degrees_index % degrees_list_len] - control_node.degrees_list[control_node.degrees_index % degrees_list_len]
-	
-	# 第一步：计算所有方块的最终位置
+func control_rotate(direction: int) -> void:
+	var pre_rotate_res = control_node.pre_rotate(direction)
 	var final_positions = []
 	var total_move = Vector2.ZERO
-	
-	for i in control_node.blocks:
-		var position_res = control_node.rotate_point_around_center(i.position, control_node.position, angle_deg)
+	for i in pre_rotate_res:
 		var move_position = Vector2.ZERO
 		
 		# 下方超出边界直接返回（不旋转）
-		if position_res.y > wall['bottom']:
+		if i.y > wall['bottom']:
 			return
 		
-		# 左右边界可以尝试修正
-		if position_res.x < wall['left']:
-			move_position.x = wall['left'] - position_res.x + block_width_half
-		elif position_res.x > wall['right']:
-			move_position.x = wall['right'] - position_res.x - block_width_half
+		if i.x < wall['left']:
+			move_position.x = wall['left'] - i.x + block_width_half
+		elif i.x > wall['right']:
+			move_position.x = wall['right'] - i.x - block_width_half
 		
-		var final_pos = position_res + move_position
+		var final_pos = i + move_position
 		# 边界检查
 		if final_pos.x < wall['left'] or final_pos.x > wall['right']:
 			return
@@ -286,9 +260,7 @@ func custom_rotate(direction: int) -> void:
 			return
 	
 	# 所有检查通过后更新状态
-	control_node.degrees_index = new_degrees_index
-	control_node.position += total_move
-	control_node.rotation_degrees = control_node.degrees_list[control_node.degrees_index % degrees_list_len]
+	control_node.apply_rotate(total_move)
 
 
 func _on_pause_menu_save() -> void:

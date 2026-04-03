@@ -21,7 +21,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Global="*res://scene/global/global.tscn"
+Global="*uid://d1ivr6164dewm"
 
 [display]
 

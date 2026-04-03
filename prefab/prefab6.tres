@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Prefab" format=3 uid="uid://dxjc1ytkeed0t"]
+
+[ext_resource type="Script" uid="uid://c7xcmoajh7rpn" path="res://script/prefab.gd" id="1_imqej"]
+
+[resource]
+script = ExtResource("1_imqej")
+position_list = Array[Vector2]([Vector2(-1, -1), Vector2(-1, 0), Vector2(0, 0), Vector2(1, 0)])
+block_width = 40.0
+metadata/_custom_type_script = "uid://c7xcmoajh7rpn"

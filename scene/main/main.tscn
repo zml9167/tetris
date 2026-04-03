@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b7i68khvmaf6k"]
 
-[ext_resource type="Script" uid="uid://b1vjb160ogfcp" path="res://scene/main/main.gd" id="1_0imob"]
+[ext_resource type="Script" uid="uid://d3di21603qp31" path="res://scene/main/main.gd" id="1_0imob"]
 [ext_resource type="PackedScene" uid="uid://mdq4iy6in1rh" path="res://scene/pause_menu/pause_menu.tscn" id="3_6vuhr"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_0xm2m"]
@@ -14,7 +14,6 @@ font_size = 64
 
 [node name="Main" type="Node" unique_id=2119766010]
 script = ExtResource("1_0imob")
-pause_menu_scene = ExtResource("3_6vuhr")
 
 [node name="PreFabPoint" type="Marker2D" parent="." unique_id=1273018037]
 position = Vector2(730, 110)

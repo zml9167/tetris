@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://mdq4iy6in1rh"]
 
-[ext_resource type="Script" uid="uid://d0ft8er0hil4m" path="res://scene/pause_menu/pause_menu.gd" id="1_mlvoh"]
+[ext_resource type="Script" uid="uid://df0ako3tq1tf3" path="res://scene/pause_menu/pause_menu.gd" id="1_mlvoh"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mlvoh"]
 font_size = 64
@@ -43,7 +43,6 @@ events = [SubResource("InputEventAction_mlvoh")]
 [node name="PauseMenu" type="CanvasLayer" unique_id=2017317042]
 process_mode = 2
 script = ExtResource("1_mlvoh")
-title_scene_path = "res://scene/title/title.tscn"
 
 [node name="Panel" type="Panel" parent="." unique_id=199606261]
 anchors_preset = 15

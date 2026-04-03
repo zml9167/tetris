@@ -54,6 +54,15 @@ func save_highest_score(score: int):
 	ResourceSaver.save(save_data, save_path)
 
 
+func clear_save():
+	save_data.has_save = false
+	save_data.stack_top = 0
+	save_data.score = 0
+	save_data.grid = []
+	save_data.control_node = {}
+	save_data.prefab_node = {}
+
+
 func save_game(blocks, stack_top, control_node, prefab_node, score):
 	save_data.has_save = true
 	save_data.highest_score = highest_score
@@ -84,7 +93,6 @@ func abandon_run():
 	save_data.control_node = {}
 	save_data.prefab_node = {}
 	save_data.grid = []
-	save_data.fall_wait_time = 0
 	save_data.stack_top = 0
 	ResourceSaver.save(save_data, save_path)
 	
