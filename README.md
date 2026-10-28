@@ -1,16 +1,16 @@
 # Tetris Game
 
-A classic Tetris game implemented using Godot 4.6 engine.
+A classic Tetris game implemented using Godot 4.7 engine.
 
 ## Features
 
 - Classic Tetris gameplay mechanics
 - Keyboard controls
-- Gamepad support
+- Partial gamepad support (movement only)
 - Score system with level progression
 - Save/load functionality
 - Pause menu
-- Game over screen
+- Game over handling (returns to title screen)
 - High score tracking
 - Abandon run confirmation dialog
 - Improved collision detection
@@ -18,7 +18,7 @@ A classic Tetris game implemented using Godot 4.6 engine.
 
 ## Technical Stack
 
-- Godot 4.6
+- Godot 4.7
 - GDScript
 - 2D graphics
 
@@ -28,7 +28,7 @@ You can play the game directly in your browser at: [https://zml9167.github.io/te
 
 ## Installation
 
-1. Download and install [Godot 4.6](https://godotengine.org/download)
+1. Download and install [Godot 4.7](https://godotengine.org/download)
 2. Clone this repository:
    ```bash
    git clone https://github.com/yourusername/tetris.git
@@ -41,17 +41,15 @@ You can play the game directly in your browser at: [https://zml9167.github.io/te
 ### Keyboard
 - **Left Arrow/A**: Move left
 - **Right Arrow/D**: Move right
-- **Down Arrow/S**: Move down (soft drop)
-- **Up Arrow/W/E**: Rotate clockwise
-- **Q**: Rotate counterclockwise
+- **Up Arrow/W**: Rotate clockwise
+- **Down Arrow/S**: Rotate counterclockwise
+- **Space**: Hard drop (fast fall)
 - **Escape**: Pause game
 
 ### Gamepad
 - **D-pad Left/Right**: Move left/right
-- **D-pad Down**: Move down
-- **A Button**: Rotate clockwise
-- **B Button**: Rotate counterclockwise
-- **Start Button**: Pause game
+
+Rotation, hard drop, and pause currently have no gamepad bindings.
 
 ## Game Mechanics
 
@@ -60,35 +58,32 @@ You can play the game directly in your browser at: [https://zml9167.github.io/te
 - The game speeds up as you level up
 - The game ends when blocks reach the top of the screen
 - Rotation is blocked when it would cause blocks to go below the bottom boundary
-- Fast drop can be activated by holding the down arrow
+- Press **Space** to activate hard drop (fast fall)
 
 ## Project Structure
 
 ```
 tetris/
-├── assets/          # Game assets
-│   └── block.png    # Block sprite
-├── prefab/          # Tetromino prefabs
-│   ├── prefab0.tres
-│   ├── prefab1.tres
-│   └── ...
-├── scene/           # Game scenes
-│   ├── block/       # Block component
-│   ├── global/      # Global game state
-│   ├── main/        # Main game scene
-│   ├── pause_menu/  # Pause menu
-│   └── title/       # Title screen
-├── script/          # Game scripts
-│   ├── controller.gd  # Block controller
-│   ├── prefab.gd      # Tetromino prefab
-│   └── save_data.gd   # Save data management
-├── project.godot    # Project configuration
-└── README.md        # This file
+├── autoload/
+│   └── global/          # Global autoload (config, save data, RNG)
+├── resource/
+│   ├── data/            # GameConfig and SaveData resources
+│   └── pieces/          # Piece definitions (I/J/L/O/S/T/Z)
+├── scenes/
+│   ├── block_pool/      # Block scene and block pool
+│   ├── game/            # Main game scene
+│   ├── pause_menu/      # Pause menu
+│   └── title/           # Title screen and abandon dialog
+├── scripts/
+│   └── core/            # GameGrid and PieceRotation
+├── project.godot        # Project configuration
+├── README.md            # This file
+└── README_zh.md         # Chinese README
 ```
 
 ## How to Play
 
-1. Press any key on title screen to start a new game
+1. Choose **Play** on the title screen to start a new game, or **Continue** to resume a saved run
 2. Use controls to move and rotate the falling blocks
 3. Try to complete horizontal lines to score points
 4. The game gets faster as your score increases
@@ -97,8 +92,8 @@ tetris/
 
 ## Saving and Loading
 
-- The game automatically saves your progress when you pause
-- You can continue your game from the title screen
+- Progress is saved automatically after each piece locks
+- You can continue your last saved run from the title screen
 - You can abandon your current run from the title screen (with confirmation)
 
 ## Contributing

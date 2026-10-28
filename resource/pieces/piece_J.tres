@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Piece" format=3 uid="uid://5dvl128yd6cq"]
+
+[ext_resource type="Script" uid="uid://dh5dwqkdl71ln" path="res://resource/pieces/piece.gd" id="1_8ekhy"]
+
+[resource]
+script = ExtResource("1_8ekhy")
+cells = PackedVector2Array(0, -1, 0, 0, 0, 1, -1, 1)
+can_rotate = true
+metadata/_custom_type_script = "uid://dh5dwqkdl71ln"

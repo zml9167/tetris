@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://b7i68khvmaf6k"]
+
+[ext_resource type="Script" uid="uid://d3di21603qp31" path="res://scenes/game/game.gd" id="1_3r3bt"]
+[ext_resource type="Script" uid="uid://dh5dwqkdl71ln" path="res://resource/pieces/piece.gd" id="2_5jirj"]
+[ext_resource type="PackedScene" uid="uid://mdq4iy6in1rh" path="res://scenes/pause_menu/pause_menu.tscn" id="2_om3bd"]
+[ext_resource type="PackedScene" uid="uid://c76aoptk1ak8k" path="res://scenes/block_pool/block_pool.tscn" id="3_0sr1o"]
+[ext_resource type="Resource" uid="uid://cgbi8whid4uyq" path="res://resource/pieces/piece_Z.tres" id="3_vaxfo"]
+[ext_resource type="Resource" uid="uid://duj0p5kp62sul" path="res://resource/pieces/piece_T.tres" id="4_ftsea"]
+[ext_resource type="Resource" uid="uid://wlik8dn7rxkt" path="res://resource/pieces/piece_S.tres" id="5_otnwt"]
+[ext_resource type="Resource" uid="uid://diwpo2xa8fbyj" path="res://resource/pieces/piece_O.tres" id="6_3xj4h"]
+[ext_resource type="Resource" uid="uid://5dvl128yd6cq" path="res://resource/pieces/piece_J.tres" id="7_5v6r0"]
+[ext_resource type="Resource" uid="uid://baox1po0apawb" path="res://resource/pieces/piece_I.tres" id="8_uyinl"]
+[ext_resource type="Resource" uid="uid://48usy32vfxht" path="res://resource/pieces/piece_L.tres" id="9_10c2w"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0xm2m"]
+font_size = 64
+
+[node name="Game" type="Node2D" unique_id=1232521458]
+script = ExtResource("1_3r3bt")
+pieces = Array[ExtResource("2_5jirj")]([ExtResource("3_vaxfo"), ExtResource("4_ftsea"), ExtResource("5_otnwt"), ExtResource("6_3xj4h"), ExtResource("7_5v6r0"), ExtResource("8_uyinl"), ExtResource("9_10c2w")])
+
+[node name="FallTimer" type="Timer" parent="." unique_id=1046596809]
+wait_time = 0.5
+
+[node name="Boundary" type="Line2D" parent="." unique_id=414334423]
+closed = true
+width = 2.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=974734414]
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer" unique_id=1886728580]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -120.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "0"
+label_settings = SubResource("LabelSettings_0xm2m")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseMenu" parent="." unique_id=500251148 instance=ExtResource("2_om3bd")]
+visible = false
+
+[node name="PieceController" type="Node2D" parent="." unique_id=1235639655]
+position = Vector2(300, -60)
+
+[node name="PiecePreview" type="Node2D" parent="." unique_id=2109953568]
+position = Vector2(720, 120)
+
+[node name="BlockPool" parent="." unique_id=634584903 instance=ExtResource("3_0sr1o")]
+
+[connection signal="timeout" from="FallTimer" to="." method="_on_fall_timer_timeout"]
+[connection signal="quit" from="PauseMenu" to="." method="_save_game"]

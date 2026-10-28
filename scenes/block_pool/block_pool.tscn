@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c76aoptk1ak8k"]
+
+[ext_resource type="Script" uid="uid://cdr2au71hjge6" path="res://scenes/block_pool/block_pool.gd" id="1_wbewp"]
+[ext_resource type="PackedScene" uid="uid://bbn7flwdlc30l" path="res://scenes/block_pool/block.tscn" id="2_n3ofw"]
+
+[node name="BlockPool" type="Node2D" unique_id=634584903]
+script = ExtResource("1_wbewp")
+block_scene = ExtResource("2_n3ofw")

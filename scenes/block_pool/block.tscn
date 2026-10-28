@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bbn7flwdlc30l"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_7mmn7"]
+size = Vector2(40, 40)
+
+[node name="Block" type="Node2D" unique_id=2087036280]
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="." unique_id=2020739757]
+mesh = SubResource("QuadMesh_7mmn7")
+
+[node name="Line2D" type="Line2D" parent="." unique_id=1456892138]
+points = PackedVector2Array(-20, -20, 20, -20, 20, 20, -20, 20)
+closed = true
+width = 1.0
+default_color = Color(0.23392546, 0.23392546, 0.23392543, 1)
