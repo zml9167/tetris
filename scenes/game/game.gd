@@ -238,8 +238,8 @@ func _promote_next_piece():
 
 func _control_rotate(direction: int) -> void:
 	var rotated_cells: Array
-
-	var piece_step = posmod(_piece_rotation_step[0] + direction, pieces[_piece_index[0]].rotation_steps_count)
+	var rotation_steps_count = pieces[_piece_index[0]].rotation_steps_count
+	var piece_step = posmod(_piece_rotation_step[0] + direction, rotation_steps_count)
 	var rotation_rad = piece_step * ROTATION_STEP_DEGREES
 	for i in piece_controller.get_children():
 		rotated_cells.append(PieceRotation.rotate_point_around_center(i.position, rotation_rad) + piece_controller.position)
