@@ -31,7 +31,7 @@ You can play the game directly in your browser at: [https://zml9167.github.io/te
 1. Download and install [Godot 4.7](https://godotengine.org/download)
 2. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/tetris.git
+   git clone https://github.com/zml9167/tetris.git
    ```
 3. Open project in Godot by selecting `project.godot` file
 4. Press play button to start game

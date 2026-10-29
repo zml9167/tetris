@@ -31,7 +31,7 @@
 1. 下载并安装 [Godot 4.7](https://godotengine.org/download)
 2. 克隆本仓库：
    ```bash
-   git clone https://github.com/yourusername/tetris.git
+   git clone https://github.com/zml9167/tetris.git
    ```
 3. 在 Godot 中打开项目，选择 `project.godot` 文件
 4. 按播放按钮开始游戏
