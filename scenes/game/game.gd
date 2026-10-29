@@ -82,13 +82,6 @@ func _ready() -> void:
 	score_label.text = str(score)
 
 
-func _get_block_by_position(pos: Vector2):
-	var index = grid.position2index(pos)
-	if index < 0 or index >= block_pool.blocks.size():
-		return null
-	return block_pool.blocks[index]
-
-
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("hard_drop"):
 		hard_drop = true
@@ -143,7 +136,7 @@ func _on_fall_timer_timeout() -> void:
 		var next_index = grid.position2index(next_position)
 		if (
 			next_position.y > grid.size.y
-			or next_index >= 0 and block_pool.blocks[next_index] != null
+			or grid.is_occupied(next_index, block_pool.blocks)
 		):
 			_fall_done()
 			return
@@ -156,7 +149,7 @@ func _try_move_horizontal(input_x):
 		if next_position.x < 0 or next_position.x > grid.size.x:
 			return
 		var next_index = grid.position2index(next_position)
-		if next_index >= 0 and block_pool.blocks[next_index] != null:
+		if grid.is_occupied(next_index, block_pool.blocks):
 			return
 	piece_controller.position.x += input_x * grid.cell_size
 
@@ -183,12 +176,7 @@ func _fall_done():
 	# 从上到下遍历
 	rows.sort()
 	for i in rows:
-		# 改行是否需要消除
-		var count = 0
-		for j in range(grid.shape.x):
-			if block_pool.blocks[i * grid.shape.x + j] != null:
-				count += 1
-		if count != grid.shape.x:
+		if not grid.is_row_full(i, block_pool.blocks):
 			continue
 		level += 1
 		
@@ -277,7 +265,7 @@ func _control_rotate(direction: int) -> void:
 	
 	# 第二步：统一进行碰撞检测
 	for pos in final_positions:
-		if _get_block_by_position(pos) != null:
+		if grid.is_occupied(grid.position2index(pos), block_pool.blocks):
 			return
 	
 	# 所有检查通过后更新状态
