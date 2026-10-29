@@ -5,5 +5,5 @@
 [resource]
 script = ExtResource("1_c6usp")
 cells = PackedVector2Array(1, 0, 0, 0, 0, 1, -1, 1)
-can_rotate = true
+rotation_steps_count = 2
 metadata/_custom_type_script = "uid://dh5dwqkdl71ln"

@@ -22,8 +22,6 @@ func _init() -> void:
 	else:
 		var loaded = ResourceLoader.load(SAVE_PATH)
 		save_data = loaded if loaded is SaveData else SaveData.new()
-	if save_data.has_save and save_data.current_piece_cells.size() == 0:
-		save_data.has_save = false
 	highest_score = save_data.highest_score
 	if save_data.random_seed and save_data.random_state:
 		rng.seed = save_data.random_seed
@@ -39,7 +37,6 @@ func update_highest_score(score: int):
 
 
 func save_game(data: Dictionary):
-	save_data.hard_drop = data.hard_drop
 	save_data.highest_score = highest_score
 	save_data.stack_top = data.stack_top
 	save_data.score = data.score
@@ -51,11 +48,8 @@ func save_game(data: Dictionary):
 		if data.blocks[i] != null:
 			save_data.grid[i] = true
 	save_data.current_piece_position = data.current_piece_position
-	save_data.current_piece_rotation = data.current_piece_rotation
-	save_data.current_piece_cells = data.current_piece_cells
-	save_data.next_piece_index = data.next_piece_index
-	save_data.next_piece_rotation = data.next_piece_rotation
-	save_data.current_piece_can_rotate = data.current_piece_can_rotate
+	save_data.piece_index = data.piece_index
+	save_data.piece_rotation_step = data.piece_rotation_step
 	save_data.has_save = true
 	var err = ResourceSaver.save(save_data, SAVE_PATH)
 	if err != OK:
