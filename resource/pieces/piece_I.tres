@@ -4,6 +4,7 @@
 
 [resource]
 script = ExtResource("1_awbdd")
+piece_id = "I"
 cells = PackedVector2Array(0, -2, 0, -1, 0, 0, 0, 1)
 rotation_steps_count = 2
 metadata/_custom_type_script = "uid://dh5dwqkdl71ln"
