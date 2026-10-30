@@ -48,7 +48,7 @@ func save_game(data: Dictionary):
 		if data.blocks[i] != null:
 			save_data.grid[i] = true
 	save_data.current_piece_position = data.current_piece_position
-	save_data.piece_index = data.piece_index
+	save_data.piece = data.piece
 	save_data.piece_rotation_step = data.piece_rotation_step
 	save_data.has_save = true
 	var err = ResourceSaver.save(save_data, SAVE_PATH)

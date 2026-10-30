@@ -24,6 +24,7 @@ func update(delta: float) -> void:
 		_reset()
 		return
 	if direction != _direction:
+		@warning_ignore("narrowing_conversion")
 		_direction = direction
 		_timer = DELAY
 		input_repeated.emit(_direction)

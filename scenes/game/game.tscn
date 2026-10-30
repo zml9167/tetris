@@ -54,5 +54,6 @@ position = Vector2(720, 120)
 
 [node name="BlockPool" parent="." unique_id=634584903 instance=ExtResource("3_0sr1o")]
 
+[connection signal="show_pause_menu" from="." to="PauseMenu" method="_on_game_show_pause_menu"]
 [connection signal="timeout" from="FallTimer" to="." method="_on_fall_timer_timeout"]
 [connection signal="quit" from="PauseMenu" to="." method="_save_game"]
